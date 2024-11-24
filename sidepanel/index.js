@@ -208,7 +208,7 @@ function showChart(response) {
   show(ElementChart);
   var options = {
     chart: {
-        type: 'line',
+        type: 'bar',
         height: 350,
         width: '100%'
         
