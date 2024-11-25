@@ -16,6 +16,13 @@ const fileButton = document.querySelector("#button-csv");
 const sumaryText = document.querySelector("#summary");
 const insightText = document.querySelector("#insight");
 const ElementChart = document.querySelector("#chart");
+const WritingLoading = document.body.querySelector("#writing");
+const SummaryWord = document.body.querySelector("#summaryText");
+const InsightWord = document.body.querySelector("#InsightText");
+
+
+
+
 
 
 let session;
@@ -32,6 +39,7 @@ async function runPrompt(prompt, params) {
       console.log(chunk, "chunk");
       temp_cunk = chunk;
       showResponse(chunk);
+      show(WritingLoading);
     }
     console.log("return complete");
     return temp_cunk;
@@ -87,6 +95,7 @@ buttonReset.addEventListener("click", () => {
   hide(elementLoading);
   hide(elementError);
   hide(elementResponse);
+  hide(WritingLoading);
   reset();
   buttonReset.setAttribute("disabled", "");
 });
@@ -139,6 +148,7 @@ fileButton.addEventListener("click", async () => {
         showSummary(data?.summary);
         showInsight(data?.insight)
         showChart(data?.graph)
+        hide(WritingLoading);
         showResponse(response);
       } catch (e) {
         showError(e);
@@ -148,6 +158,7 @@ fileButton.addEventListener("click", async () => {
     reader.readAsText(file); // Read the file as text
   } else {
     console.log("No file selected");
+    alert("No file selected ")
   }
 });
 
@@ -194,12 +205,14 @@ function showResponse(response) {
 function showSummary(response) {
   hide(elementLoading);
   show(sumaryText);
+  show(SummaryWord)
   sumaryText.innerHTML = response;
   // elementResponse.innerHTML = DOMPurify.sanitize(marked.parse(response));
 }
 function showInsight(response) {
   hide(elementLoading);
   show(insightText);
+  show(InsightWord);
   insightText.innerHTML = response;
   // elementResponse.innerHTML = DOMPurify.sanitize(marked.parse(response));
 }

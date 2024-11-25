@@ -19,7 +19,7 @@
       <label for="file-upload" class="file-upload-label">Upload CSV File</label>
       <input type="file" id="file-upload" accept=".csv" />
     </div>
-    <button id="button-csv" class="primary">Run File</button>
+    <button id="button-csv" class="primary" > ✨ Run File</button>
     
     <div class="slider-group">
       <div class="slider-item">
@@ -57,12 +57,19 @@
       <!-- <button id="button-prompt" class="primary" disabled>Run</button> -->
       <button id="button-reset" class="secondary" disabled>Reset</button>
     </div>
-
-    <div id="response" class="text" hidden></div>
-    <div id="chart" hidden></div>
-    <div id="summary" class="text" hidden></div>
-    <div id="insight" class="text" hidden></div>
     <div id="loading" class="text" hidden>Thinking<span class="blink">...</span></div>
+    <div id="writing" class="text" hidden>Writing<span class="blink">... 𓂃🖊</span></div>
+    <details id="response" hidden>
+      <summary >Show / Hide Writing</summary>
+      <div id="response" class="text" ></div>
+    </details>  
+
+   <div class="report">
+    <div id="chart" hidden></div>
+    <div id="summaryText" class="text" hidden><b>Summary: </b><br> <br><div id="summary" ></div></div>
+    <div id="InsightText" class="text" hidden><b>Insight: </b><br> <br><div id="insight" ></div></div>
+  </div>
+
     <div id="error" class="text" hidden></div>
     <div class="input-area">
       <textarea
