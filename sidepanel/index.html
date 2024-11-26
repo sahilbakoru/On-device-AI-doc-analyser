@@ -7,6 +7,8 @@
   <title>Chrome Extension Interface</title>
   <link rel="stylesheet" href="index.css">
   <script src="./apexcharts.min.js"></script>
+  <script src="./html2canvas.min.js"></script>
+<script src="./jspdf.min.js" ></script>
 
 </head>
 <body>
@@ -64,12 +66,15 @@
       <div id="response" class="text" ></div>
     </details>  
 
-   <div class="report">
+  
+    
+
+  <div id="report"  class="report">
     <div id="chart" hidden></div>
     <div id="summaryText" class="text" hidden><b>Summary: </b><br> <br><div id="summary" ></div></div>
     <div id="InsightText" class="text" hidden><b>Insight: </b><br> <br><div id="insight" ></div></div>
   </div>
-
+  <button id="download">Download PDF</button>
     <div id="error" class="text" hidden></div>
     <div class="input-area">
       <textarea
@@ -86,6 +91,6 @@
   </div>
 
 
-  <script src="index.js" type="module"></script>
+  <script src="index.js"  ></script>
 </body>
 </html>

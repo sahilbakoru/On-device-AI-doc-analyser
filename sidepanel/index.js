@@ -61,6 +61,63 @@ async function reset() {
   session = null;
 }
 
+
+
+
+const { jsPDF } = window.jspdf;
+
+document.getElementById("download").addEventListener("click", () => {
+  const element = document.getElementById("report");
+
+  if (element) {
+    console.log("Element found, capturing canvas...");
+
+    // Render the element using html2canvas
+    html2canvas(element, { scale: 2, useCORS: true })
+      .then((canvas) => {
+        console.log("Canvas created successfully!");
+
+        const imgData = canvas.toDataURL("image/png");
+
+        // Initialize jsPDF
+        const pdf = new jsPDF("p", "mm", "a4");
+
+        // Get the width of the page and calculate the height
+        const pdfWidth = pdf.internal.pageSize.getWidth();
+        const pdfHeight = pdf.internal.pageSize.getHeight();
+
+        // Set imgWidth and imgHeight as let to allow reassignment
+        let imgWidth = pdfWidth;
+        let imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+        // If the height is greater than the page height, scale it down
+        if (imgHeight > pdfHeight) {
+          const scaleFactor = pdfHeight / imgHeight;
+          imgHeight = pdfHeight;
+          imgWidth = imgWidth * scaleFactor;
+        }
+
+        // Add the rendered image to the PDF
+        pdf.addImage(imgData, "PNG", 0, 0, imgWidth, imgHeight);
+
+        // Save the PDF
+        pdf.save("report.pdf");
+        console.log("PDF saved!");
+      })
+      .catch((error) => {
+        console.error("Error generating canvas:", error);
+      });
+  } else {
+    console.error("Element not found!");
+  }
+});
+
+
+
+
+
+
+
 async function initDefaults() {
   if (!("aiOriginTrial" in chrome)) {
     showResponse("Error: chrome.aiOriginTrial not supported in this browser");
