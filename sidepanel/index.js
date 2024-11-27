@@ -1,8 +1,8 @@
 // import DOMPurify from 'dompurify';
 // import { marked } from 'marked';
 
-const inputPrompt = document.body.querySelector("#input-prompt");
-const buttonPrompt = document.body.querySelector("#button-prompt");
+// const inputPrompt = document.body.querySelector("#input-prompt");
+// const buttonPrompt = document.body.querySelector("#button-prompt");
 const buttonReset = document.body.querySelector("#button-reset");
 const elementResponse = document.body.querySelector("#response");
 const elementLoading = document.body.querySelector("#loading");
@@ -19,6 +19,12 @@ const ElementChart = document.querySelector("#chart");
 const WritingLoading = document.body.querySelector("#writing");
 const SummaryWord = document.body.querySelector("#summaryText");
 const InsightWord = document.body.querySelector("#InsightText");
+const targetLangSelect = document.getElementById("target-lang");
+const download = document.body.querySelector("#download");
+const ButtonContainer = document.body.querySelector("#ButtonContainer");
+const details = document.body.querySelector("#details");
+
+
 
 
 
@@ -40,6 +46,7 @@ async function runPrompt(prompt, params) {
       temp_cunk = chunk;
       showResponse(chunk);
       show(WritingLoading);
+      show(details)
     }
     console.log("return complete");
     return temp_cunk;
@@ -153,6 +160,13 @@ buttonReset.addEventListener("click", () => {
   hide(elementError);
   hide(elementResponse);
   hide(WritingLoading);
+  hide(details)
+  hide(ElementChart)
+  hide(sumaryText)
+  hide(SummaryWord)
+  hide(insightText)
+  hide(InsightWord)
+  hide(ButtonContainer)
   reset();
   buttonReset.setAttribute("disabled", "");
 });
@@ -167,13 +181,67 @@ sliderTopK.addEventListener("input", (event) => {
   reset();
 });
 
-inputPrompt.addEventListener("input", () => {
-  if (inputPrompt.value.trim()) {
-    buttonPrompt.removeAttribute("disabled");
+// inputPrompt.addEventListener("input", () => {
+//   if (inputPrompt.value.trim()) {
+//     buttonPrompt.removeAttribute("disabled");
+//   } else {
+//     buttonPrompt.setAttribute("disabled", "");
+//   }
+// });
+let defaltLanguageData = "hi < { 2.4 } how are you !";
+let dataToTranslate = "hi < { 2.4 } how are you !";
+async function setupTranslator(sourceLanguage, targetLanguage) {
+  const languagePair = { sourceLanguage, targetLanguage };
+  const canTranslate = await translation.canTranslate(languagePair);
+
+  if (canTranslate !== "no") {
+    return await translation.createTranslator(languagePair);
   } else {
-    buttonPrompt.setAttribute("disabled", "");
+    throw new Error(`Translation not available for ${sourceLanguage} → ${targetLanguage}`);
   }
-});
+}
+
+async function translateText(translator, text) {
+  try {
+    const translation = await translator.translate(text);
+    console.log(`Translated Text: ${translation}`);
+    return translation;
+  } catch (error) {
+    console.error("Translation failed:", error);
+    throw error;
+  }
+}
+
+targetLangSelect.addEventListener("change", async () => {
+  const sourceLanguage = "en"; // Fixed source language
+  const targetLanguage = targetLangSelect.value;
+
+  if(targetLanguage=="en"){
+    showSummary(defaltLanguageData?.summary);
+    showInsight(defaltLanguageData?.insight)
+    return;
+  }
+
+  if (!targetLanguage) {
+    console.log ("no language selected")
+    // No language selected; do nothing
+    return;
+  }
+  const translator = await setupTranslator(sourceLanguage, targetLanguage);
+  // Translate cleaned text
+  const translatedTextSummary = await translateText(translator, dataToTranslate?.summary);
+  const translatedTextInsight = await translateText(translator, dataToTranslate?.insight);
+
+  console.log("Original Text:", dataToTranslate);
+  console.log("Translated Text summary:", translatedTextSummary);
+  console.log("Translated Tex insightt:", translatedTextInsight);
+  showSummary(translatedTextSummary);
+  showInsight(translatedTextInsight)
+  
+})
+
+
+
 // file handle
 fileButton.addEventListener("click", async () => {
   let file = fileUpload.files[0]; // Get the selected file
@@ -201,11 +269,13 @@ fileButton.addEventListener("click", async () => {
         console.log(data?.summary, "sumary after json filter");
         console.log(data?.insight, "insight after json filter");
         console.log(data?.graph.x, "data for graph after json filter");
-
+        dataToTranslate = data
+        defaltLanguageData = data
         showSummary(data?.summary);
         showInsight(data?.insight)
         showChart(data?.graph)
         hide(WritingLoading);
+        hide(details)
         showResponse(response);
       } catch (e) {
         showError(e);
@@ -229,22 +299,23 @@ function parseCSV(csvText) {
   return result;
 }
 
-buttonPrompt.addEventListener("click", async () => {
-  const prompt = inputPrompt.value.trim();
-  showLoading();
-  try {
-    const params = {
-      systemPrompt: "You are a helpful and friendly assistant.",
-      temperature: sliderTemperature.value,
-      topK: sliderTopK.value,
-    };
-    const response = await runPrompt(prompt, params);
-    console.log("response from runPrompt return ", response);
-    showResponse(response);
-  } catch (e) {
-    showError(e);
-  }
-});
+// buttonPrompt.addEventListener("click", async () => {
+//   const prompt = inputPrompt.value.trim();
+//   showLoading();
+//   try {
+//     const params = {
+//       systemPrompt: "You are a helpful and friendly assistant.",
+//       temperature: sliderTemperature.value,
+//       topK: sliderTopK.value,
+//     };
+//     const response = await runPrompt(`hi  answer this question, keep it short less than 100 words. This is the question: ${prompt} `, params);
+//     console.log("response from runPrompt return ", response);
+//     hide(WritingLoading);
+//     showAnswer(response);
+//   } catch (e) {
+//     showError(e);
+//   }
+// });
 
 function showLoading() {
   buttonReset.removeAttribute("disabled");
@@ -259,10 +330,13 @@ function showResponse(response) {
   elementResponse.innerHTML = response;
   // elementResponse.innerHTML = DOMPurify.sanitize(marked.parse(response));
 }
+
 function showSummary(response) {
   hide(elementLoading);
   show(sumaryText);
   show(SummaryWord)
+  show(download);
+  show(ButtonContainer)
   sumaryText.innerHTML = response;
   // elementResponse.innerHTML = DOMPurify.sanitize(marked.parse(response));
 }
@@ -270,6 +344,8 @@ function showInsight(response) {
   hide(elementLoading);
   show(insightText);
   show(InsightWord);
+  show(download);
+  show(ButtonContainer)
   insightText.innerHTML = response;
   // elementResponse.innerHTML = DOMPurify.sanitize(marked.parse(response));
 }
@@ -308,6 +384,7 @@ function showError(error) {
   show(elementError);
   hide(elementResponse);
   hide(elementLoading);
+  hide(WritingLoading)
   elementError.textContent = error;
 }
 

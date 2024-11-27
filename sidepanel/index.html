@@ -21,7 +21,7 @@
       <label for="file-upload" class="file-upload-label">Upload CSV File</label>
       <input type="file" id="file-upload" accept=".csv" />
     </div>
-    <button id="button-csv" class="primary" > ✨ Run File</button>
+    <button id="button-csv" class="primary" > Run  Analysis  ✨ </button>
     
     <div class="slider-group">
       <div class="slider-item">
@@ -59,11 +59,11 @@
       <!-- <button id="button-prompt" class="primary" disabled>Run</button> -->
       <button id="button-reset" class="secondary" disabled>Reset</button>
     </div>
-    <div id="loading" class="text" hidden>Thinking<span class="blink">...</span></div>
-    <div id="writing" class="text" hidden>Writing<span class="blink">... 𓂃🖊</span></div>
-    <details id="response" hidden>
+    <div id="loading" style="color: darkblue;" class="text" hidden>Thinking.<span class="blink">..˖°✧₊⋆</span></div>
+    <div id="writing" style="color: darkgreen;" class="text" hidden>Writing<span class="blink">... 𓂃🖊</span></div>
+    <details id="details"  hidden>
       <summary >Show / Hide Writing</summary>
-      <div id="response" class="text" ></div>
+      <div id="response" class="text" hidden ></div>
     </details>  
 
   
@@ -74,9 +74,24 @@
     <div id="summaryText" class="text" hidden><b>Summary: </b><br> <br><div id="summary" ></div></div>
     <div id="InsightText" class="text" hidden><b>Insight: </b><br> <br><div id="insight" ></div></div>
   </div>
-  <button id="download">Download PDF</button>
-    <div id="error" class="text" hidden></div>
-    <div class="input-area">
+  <div id="error" class="text" hidden></div>
+
+  <div id="ButtonContainer"  class="ButtonContainer" hidden >
+  <button id="download" >Download PDF</button>
+  <div class="lang-selector">
+    <label for="target-lang"> <b>Translate:</b> </label>
+    <select id="target-lang">
+      <option value="">Select language</option> 
+      <option value="es">Spanish</option>
+      <option value="ja">Japanese</option>
+      <option value="hi">Hindi</option>
+      <option value="en">English</option>
+      <!-- Add more target languages as needed -->
+    </select>
+  </div>
+</div>
+
+    <!-- <div class="input-area">
       <textarea
         id="input-prompt"
         placeholder='Ask a question...'
@@ -86,7 +101,7 @@
       <button id="button-prompt" class="primary short" disabled>
         &#9658;
       </button>
-    </div>
+    </div> -->
     
   </div>
 
