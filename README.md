@@ -1,3 +1,6 @@
+![image](https://github.com/user-attachments/assets/af2805ba-2c08-4d55-8083-c1998baab869)
+
+
 ## Overview
 
 This extension analyzes CSV files offline, generating reports with summaries, insights, and graphs. It keeps your data secure by processing everything on your device, with options to translate the report and download it or the graphs.  using the Prompt API and TranslateAPI with Chrome's built-in Gemini Nano model.
